@@ -1,0 +1,23 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: demo-pipeline-listener
+spec:
+  namespaceSelector: {}
+  resources: {}
+  serviceAccountName: pipeline
+  triggers:
+    - bindings:
+        - kind: TriggerBinding
+          ref: innerloop-binding
+      interceptors:
+        - params:
+            - name: filter
+              value: |
+                header.match('X-GitHub-Event', 'push') && body.ref == 'refs/heads/main'
+          ref:
+            kind: ClusterInterceptor
+            name: cel
+      name: branch-push-trigger
+      template:
+        ref: innerloop-template

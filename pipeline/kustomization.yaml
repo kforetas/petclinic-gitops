@@ -1,3 +1,8 @@
 resources:
   - pvc.yaml
   - demo-pipeline.yaml
+  - innerloop-binding.yaml
+  - innerloop-template.yaml
+  - route.yaml
+  - listener.yaml
+  - service.yaml

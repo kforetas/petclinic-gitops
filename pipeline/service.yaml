@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: el-demo-pipeline-listener
+spec:
+  ports:
+    - name: http-listener
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    eventlistener: demo-pipeline-listener
+  type: ClusterIP

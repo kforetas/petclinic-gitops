@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: el-demo-pipeline-listener
+  labels:
+    eventlistener: demo-pipeline-listener
+spec:
+  to:
+    kind: Service
+    name: el-demo-pipeline-listener
+    weight: 100
+  port:
+    targetPort: http-listener
+  wildcardPolicy: None
