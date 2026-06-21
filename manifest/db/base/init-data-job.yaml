@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-data-job
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+  labels:
+    app: petclinic-data-app
+    app.openshift.io/runtime: other-linux
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: petclinic-data-app
+          image: docker.io/rhnconsultingkemori/petclinic-data:latest
+          imagePullPolicy: Always
+          env:
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: database-params
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: database-params
+                  key: DB_PASS
+            - name: DB_SERVERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: database-params
+                  key: DB_HOST
+            - name: DB_PORTNUMBER
+              valueFrom:
+                configMapKeyRef:
+                  name: database-params
+                  key: DB_PORT
