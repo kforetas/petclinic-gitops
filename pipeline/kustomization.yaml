@@ -6,3 +6,4 @@ resources:
   - route.yaml
   - listener.yaml
   - service.yaml
+  - update-manifest-pipeline.yaml
