@@ -109,5 +109,40 @@ spec:
       workspaces:
         - name: output
           workspace: shared-data
+    - name: update-gitops
+      params:
+        - name: DELETE_EXISTING
+          value: 'false'
+        - name: GIT_USER_NAME
+          value: kforetas
+        - name: GIT_USER_EMAIL
+          value: kforetxp@yahoo.co.jp
+        - name: GIT_SCRIPT
+          value: |-
+            # 1. 開発環境（dev）のディレクトリへ移動 
+            cd $(workspaces.source.path)/manifest/manifest/app
+            TARGET_DIR="overlays/dev"
+            cd $TARGET_DIR
+            # 2. kustomization.yaml 内の newTag の行だけを置換 
+            sed -i "s|newTag:.*|newTag: $(params.image-tag)|g" kustomization.yaml
+            # 3. Git Push 
+            git add . 
+            git commit -m "Update dev image to $(params.image-tag)" 
+            git push origin HEAD:main
+      runAfter:
+        - build-and-push
+        - git-clone-manifest
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-cli
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: shared-data
   workspaces:
     - name: shared-data
