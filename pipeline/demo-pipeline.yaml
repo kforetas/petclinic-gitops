@@ -1,0 +1,72 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: demo-pipeline
+spec:
+  params:
+    - default: 'https://github.com/kforetas/spring-petclinic.git'
+      description: アプリのソースコードリポジトリ
+      name: repo-url
+      type: string
+    - default: rhnconsultingkemori
+      description: docker hub username
+      name: docker-username
+      type: string
+    - default: 'https://github.com/kforetas/petclinic-gitops.git'
+      description: マニフェスト管理用リポジトリ
+      name: manifest-repo-url
+      type: string
+    - default: latest
+      description: ビルドするイメージのタグ
+      name: image-tag
+      type: string
+  tasks:
+    - name: git-clone-source
+      params:
+        - name: SUBDIRECTORY
+          value: source
+        - name: DELETE_EXISTING
+          value: 'true'
+        - name: URL
+          value: $(params.repo-url)
+        - name: REVISION
+          value: main
+        - name: DEPTH
+          value: '1'
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: output
+          workspace: shared-data
+    - name: build-and-push-image
+      params:
+        - name: APP_IMAGE
+          value: 'docker.io/$(params.docker-username)/petclinic:$(params.image-tag)'
+        - name: SOURCE_SUBPATH
+          value: source
+        - name: BUILDER_IMAGE
+          value: 'gcr.io/paketo-buildpacks/builder:base'
+        - name: ENV_VARS
+          value:
+            - "BP_MAVEN_BUILD_ARGUMENTS=-DskipTests clean package"
+      runAfter:
+        - git-clone-source
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildpacks
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: shared-data
+  workspaces:
+    - name: shared-data
