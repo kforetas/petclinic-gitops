@@ -85,5 +85,29 @@ spec:
       workspaces:
         - name: source
           workspace: shared-data
+    - name: git-clone-manifest
+      params:
+        - name: SUBDIRECTORY
+          value: manifest
+        - name: DELETE_EXISTING
+          value: 'false'
+        - name: URL
+          value: $(params.manifest-repo-url)
+        - name: REVISION
+          value: main
+        - name: DEPTH
+          value: '1'
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: output
+          workspace: shared-data
   workspaces:
     - name: shared-data
