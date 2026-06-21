@@ -64,7 +64,6 @@ spec:
             value: task
           - name: name
             value: buildpacks
-        resolver: cluster
       workspaces:
         - name: source
           workspace: shared-data
