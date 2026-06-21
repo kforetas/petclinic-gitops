@@ -5,4 +5,4 @@ resources:
 images:
   - name: docker.io/rhnconsultingkemori/petclinic
     newName: docker.io/rhnconsultingkemori/petclinic
-    newTag: v1.0.1
+    newTag: 9fef52c6e3c371a7990449f6153eef0a0641cd22
