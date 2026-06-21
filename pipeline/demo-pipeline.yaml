@@ -45,5 +45,46 @@ spec:
       workspaces:
         - name: output
           workspace: shared-data
+    - name: maven-test
+      runAfter:
+        - git-clone-source
+      workspaces:
+        - name: source
+          workspace: shared-data
+      taskSpec:
+        workspaces:
+          - name: source
+        steps:
+          - name: run-test
+            image: registry.access.redhat.com/ubi8/openjdk-17:1.18
+            script: |
+              #!/bin/sh
+              cd $(workspaces.source.path)/source
+              # テストだけを実行するコマンド
+              ./mvnw test
+    - name: build-and-push
+      params:
+        - name: IMAGE
+          value: 'docker.io/$(params.docker-username)/petclinic:$(params.image-tag)'
+        - name: DOCKERFILE
+          value: ./Dockerfile
+        - name: CONTEXT
+          value: source/source
+        - name: STORAGE_DRIVER
+          value: vfs
+      runAfter:
+        - maven-test
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: shared-data
   workspaces:
     - name: shared-data
