@@ -1,2 +1,8 @@
 resources:
   - ../../base
+
+# Commit sync - commit_hash_tag
+images:
+  - name: docker.io/rhnconsultingkemori/petclinic
+    newName: docker.io/rhnconsultingkemori/petclinic
+    newTag: latest
