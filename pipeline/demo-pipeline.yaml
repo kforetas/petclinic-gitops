@@ -60,8 +60,7 @@ spec:
             script: |
               #!/bin/sh
               cd $(workspaces.source.path)/source
-              # テストだけを実行するコマンド
-              ./mvnw test
+              mvn test
     - name: build-and-push
       params:
         - name: IMAGE
