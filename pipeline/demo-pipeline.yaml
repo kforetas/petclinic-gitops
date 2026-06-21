@@ -68,7 +68,7 @@ spec:
         - name: DOCKERFILE
           value: ./Dockerfile
         - name: CONTEXT
-          value: source/source
+          value: source
         - name: STORAGE_DRIVER
           value: vfs
       runAfter:
