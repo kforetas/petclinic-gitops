@@ -56,7 +56,7 @@ spec:
           - name: source
         steps:
           - name: run-test
-            image: registry.access.redhat.com/ubi8/openjdk-17:1.18
+            image: registry.access.redhat.com/ubi9/openjdk-17:1.18
             script: |
               #!/bin/sh
               cd $(workspaces.source.path)/source
