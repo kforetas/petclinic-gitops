@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: deploy-db-it-1
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/kforetas/petclinic-gitops'
+    targetRevision: HEAD
+    path: manifest/db/overlays/it-1
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: petclinic-it-1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
