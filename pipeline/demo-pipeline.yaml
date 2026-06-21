@@ -45,28 +45,5 @@ spec:
       workspaces:
         - name: output
           workspace: shared-data
-    - name: build-and-push-image
-      params:
-        - name: APP_IMAGE
-          value: 'docker.io/$(params.docker-username)/petclinic:$(params.image-tag)'
-        - name: SOURCE_SUBPATH
-          value: source
-        - name: BUILDER_IMAGE
-          value: 'gcr.io/paketo-buildpacks/builder:base'
-        - name: ENV_VARS
-          value:
-            - "BP_MAVEN_BUILD_ARGUMENTS=-DskipTests clean package"
-      runAfter:
-        - git-clone-source
-      taskRef:
-        params:
-          - name: kind
-            value: task
-          - name: name
-            value: buildpacks
-        resolver: cluster
-      workspaces:
-        - name: source
-          workspace: shared-data
   workspaces:
     - name: shared-data
